@@ -32,7 +32,7 @@ const template = multiline(()=>{/*
 <!doctype html>
 <html>
 	<head>
-		<title>GPIO 입출력 시스템</title>
+		<title>컴퓨터 GPIO 입출력 시스템</title>
 		<meta charset="UTF-8">
 		<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 		<style>
