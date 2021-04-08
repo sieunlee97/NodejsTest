@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+	<head>
+		<title>GPIO 입출력 시스템</title>
+		<meta charset="UTF-8">
+		<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+		<style>
+			body {
+				background-color:black;
+				text-align:center;
+			}
+			p {
+				font-size:50px;
+				color:yellow;
+			}
+			#state {
+				font-size:80px;
+				color:red;
+				text-decoration:none;
+			}
+		</style>
+	</head>
+	<body>
+		<p>
+			전등 IoT 시스템
+		</p>
+		<input type="button" value="ON" style="width:200px; height:80px; font-size:50px;" id="on">
+		<input type="button" value="OFF" style="width:200px; height:80px; font-size:50px;" id="off">
+		<br>
+		<p>LED is now <span id="state"></span> state. </p>
+		<script>
+			var state="on";
+			$("#state").text(state);
+			$("#on").on("click", function(){
+				$.ajax({
+					url:"/on",
+					method:"get",
+					data:"text",
+					success:function(result){
+						alert(result);
+						$("#state").text("on");
+					},
+					error:function(result){
+						alert("API서버가 작동하지 않습니다.");
+					}
+				});
+			});
+			$("#off").on("click", function(){
+				$.ajax({
+					url:"/off",
+					method:"get",
+					data:"text",
+					success:function(result){
+						alert(result);
+						$("#state").text("off");
+					},
+					error:function(result){
+						alert("API서버가 작동하지 않습니다.");
+					}
+				});
+			});
+		</script>
+	</body>
+</html>
