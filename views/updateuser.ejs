@@ -7,7 +7,7 @@
     <body>
         <h1>사용자 수정</h1>
         <br>
-        <form method="post" action="/process/updateuser">
+        <form method="post" action="/process/updateuser" id="actionform">
         <table>
             <tr>
                 <td>아이디</td>
@@ -35,11 +35,23 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="submit" value="등록">
+                    <input type="submit" value="수정">
+                    <input type="button" value="삭제" id="deleteuser">
                     <input type="button" value="리스트" onclick="location.replace('/process/listuser')">
                 </td>
             </tr>
         </table>
         </form>
+        <script>
+            var deleteuser = document.getElementById('deleteuser');
+            var actionform = document.getElementById('actionform');
+            deleteuser.onclick = function(){
+                if(confirm("정말로 삭제하시겠습니까?")){
+                    actionform.setAttribute("action","/process/deleteuser");
+                    actionform.submit();
+                }
+                
+            }
+        </script>
     </body>
 </html>
