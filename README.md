@@ -5,7 +5,7 @@
 - > 스프링과 비교하자면, pom.xml 설정 추가 & 컨트롤러에서 url 매핑하는 것과 같다.
 - 데이터베이스 커넥션 확인
 - [X] goormIDE에서 mysql를 설치한다.
-- [ ] 디자인 파일 html 생성 -> 데이터 처리 js파일 생성 -> 로컬 PC에서 CRUD 테스트 -> git 커밋/푸시 -> goormIDE 배포
+- [X] 디자인 파일 html 생성 -> 데이터 처리 js파일 생성 -> 로컬 PC에서 CRUD 테스트 -> git 커밋/푸시 -> goormIDE 배포
 
 
 ```

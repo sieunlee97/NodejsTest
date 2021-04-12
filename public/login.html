@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <title>MySQL 로그인 테스트</title>
+    <body>
+        <h1>MySQL 로그인</h1>
+        <br>
+        <form method="post" action="/process/login">
+            <table>
+                <tr>
+                    <td>아이디</td>
+                    <td><input type="text" name="id"></td>
+                </tr>
+                <tr>
+                    <td>암호</td>
+                    <td><input type="password" name="password"></td>
+                </tr>
+            </table>   
+               <input type="submit" value="로그인">
+               <input type="button" value="home" id="goHome">
+        </form>
+        <script>
+            //jQuer가 아닌 오리지널 자바스크립트 코드(아래)
+            var goHome = document.getElementById('goHome');
+            goHome.onclick = function(){
+                //alert('goHome클릭');
+                location.replace('/');
+            }
+        </script>
+    </body>
+</html>
