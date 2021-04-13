@@ -63,6 +63,7 @@ if(pool){
             return;
         }
         conn.query("select * from users");
+        conn.release();
         conn.on('error', function(err){
             console.log('데이터베이스 연결 시 에러가 발생했습니다.');
             console.dir(err);
@@ -79,9 +80,31 @@ var router = express.Router(); // URL 매핑 객체 생성
 app.use('/', router);
 
 //초기 페이지 연결
+//기존 html 출력 /process/listuser -> ejs 템플릿 뷰로 변경
 router.route('/').get(function(req, res){
-    res.status(200);
-    res.sendFile(path.join(__dirname, 'public', 'listuser.html'));
+    //res.status(200);
+    //res.sendFile(path.join(__dirname, 'public', 'listuser.html'));
+    console.log('/process/listuser 호출됨');
+    if(pool){
+        allUser(function(err, result){
+            if(err){
+                console.log('사용자 리스트 조회 시 에러 발생 : '+ err.stack);
+                //에러 상황을 브라우저에 출력함
+                res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
+                res.write('<h2>사용자리스트 조회 시 에러 발생</h2>');
+                res.write('<p>'+err.stack+'</p>');
+                res.end();
+                return;
+            }
+            console.dir(result);
+            //사용자 리스트를 브라우저 화면에 뿌려줌
+            res.render(__dirname+'/views/listuser', {userList:result} );
+        });
+    }else{ //pool이 false일 때
+        res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
+        res.write('<h2>데이터베이스 연결 실패</h2>');
+        res.end();
+    }
 });
 //삭제 DAO 처리 ==================================================================================
 router.route('/process/deleteuser').post(function(req,res){
@@ -97,6 +120,7 @@ router.route('/process/deleteuser').post(function(req,res){
             if(conn){
                 var paramId = req.body.id;
                 var exec = conn.query("delete from users where id = ?", paramId, function(err, result){
+                    conn.release();
                     console.log("디버그 : 삭제쿼리 확인 "+ exec.sql);
                     if(err){
                         conn.release();
@@ -107,7 +131,7 @@ router.route('/process/deleteuser').post(function(req,res){
                     }
                     if(result.affectedRows>0){
                         res.writeHead('200',{'Content-Type':'text/html;charset=utf8'});
-                        res.write('<script>alert("삭제되었습니다.");location.replace("/process/listuser");</script>');
+                        res.write('<script>alert("삭제되었습니다.");location.replace("/");</script>');
                         res.end();
                     } else {
                         res.writeHead('200',{'Content-Type':'text/html;charset=utf8'});
@@ -137,6 +161,7 @@ router.route('/process/updateuser').post(function(req,res){
                 var paramPassword = req.body.password;
                 var updateSet = {name:paramName, age:paramAge, password:paramPassword};
                 var exec=conn.query("update users set ? where id=?",[updateSet, paramId], function(err, result){
+                    conn.release();
                     if(err){
                         console.log("디버그 update쿼리 : "+ exec.sql);
                         if(conn){ conn.release(); }
@@ -197,6 +222,7 @@ var viewUser = function(id, callback){
             return;
         }
         var exec = conn.query("select * from users where id = ?", id,function(err, rows){
+            conn.release();
             if(err){
                 console.log(exec.sql);
                 callback(err,null);
@@ -211,6 +237,9 @@ var viewUser = function(id, callback){
     });
 }
 
+
+//아래 리스트를 / 라우터로 대체한다.
+//아래 라우터 사용하지 않고, ejs 템플릿 사용
 //리스트 사용자 페이지 연결==================================================================================
 router.route('/process/listuser').get(function(req, res){
     console.log('/process/listuser 호출됨');
@@ -310,13 +339,13 @@ router.route('/process/adduser').post(function(req, res){
                 console.dir(result);
                 res.writeHead('200',{'Content-Type':'text/html;charset=utf8'});
                 res.write('<h2>사용자 추가 성공</h2>');
-                res.write('<br><a href="/public/listuser.html">사용자리스트</a>');
+                res.write('<br><a href="/">사용자리스트</a>');
                 res.write('<br><a href="/public/login.html">로그인</a>');
                 res.end();
             }else{
                 res.writeHead('200',{'Content-Type':'text/html;charset-utf8'});
                 res.write('<h2>사용자 추가 실패</h2>');
-                res.write('<br><a href="/public/listuser.html">사용자리스트</a>');
+                res.write('<br><a href="/">사용자리스트</a>');
                 res.write('<br><a href="/public/adduser.html">사용자등록</a>');
                 res.end();
             }
